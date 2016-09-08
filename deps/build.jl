@@ -15,11 +15,12 @@ if is_windows()
     # directly download complied dll files
     info("Downloading generated binaries from Gnimuc/GCoptimization repo...")
     downloads("$(repo)/releases/download/v$(version)/lib$(name)-x$(Sys.WORD_SIZE).$(Libdl.dlext)", "usr/lib$(Sys.WORD_SIZE)/lib$(name).$(Libdl.dlext)")
-end
+else
+    mkpath("usr/lib")
     info("Downloading source code from Gnimuc/GCoptimization repo...")
     provides(Sources, URI("$(repo)/archive/v$(version).tar.gz"),
-        [libGCO], unpacked_dir="$(name)-$(version)")
-
+        libGCO, unpacked_dir="$(name)-$(version)")
+    info("Building...")
     provides(BuildProcess,
         (@build_steps begin
             GetSources(libGCO)
@@ -28,11 +29,11 @@ end
                 @build_steps begin
                     `cmake .`
                     `make`
+                    `cp -R lib ../../usr`
                 end
             end
-        end), libGCO, os = :Unix)
-
-    cp(joinpath(srcdir, "lib"), joinpath(BinDeps.depsdir(libGCO), "usr/lib"), remove_destination=true)
+        end), libGCO)
+    info("After Building...")
 end
 
 @BinDeps.install Dict(:libGCO => :libGCO)
