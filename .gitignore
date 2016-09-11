@@ -3,6 +3,7 @@
 *.jl.mem
 
 deps/downloads
+deps/builds
 deps/src
 deps/usr
 deps/deps.jl
