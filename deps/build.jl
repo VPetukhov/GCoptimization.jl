@@ -1,58 +1,50 @@
-using BinDeps
-
-@BinDeps.setup
-
 const version = "1.2.6"
 const name = "GCoptimization"
-const repo = "https://github.com/Gnimuc/GCoptimization"
+const libname = "lib"*name
+const repo = "https://github.com/Gnimuc/$name"
 const suffix = Sys.WORD_SIZE == 64 ? "x64" : "x86"
 
-libgco = library_dependency("libGCoptimization", aliases = ["libGCoptimization-x86", "libGCoptimization-x64"])
+prefix = joinpath(dirname(@__FILE__), "usr")
+srcdir = joinpath(dirname(@__FILE__), "src", "$name-$version")
+builddir = joinpath(dirname(@__FILE__), "builds", "$name-$version")
 
-prefix = joinpath(BinDeps.depsdir(libgco), "usr")
-srcdir = joinpath(BinDeps.srcdir(libgco), "$(name)-$(version)")
-builddir = joinpath(BinDeps.depsdir(libgco), "builds", "$(name)-$(version)")
+# download source code
+mkpath("downloads")
+tarball = "downloads/$name-$version.tar.gz"
+if !isfile(tarball)
+    info("Downloading $name-$version source from $repo...")
+    download("$repo/archive/v$version.tar.gz", tarball)
+end
 
-# download source files
-provides(Sources, URI("$(repo)/archive/v$(version).tar.gz"),
-    [libgco], unpacked_dir="$(name)-$(version)")
+# unpack source tarball
+mkpath(srcdir)
+run(`tar xzf $tarball -C src`)
 
-# directly download pre-complied dll files
-provides(Binaries, URI("$(repo)/releases/download/v$(version)/lib$(name)-$(suffix).zip"),
-    [libgco], unpacked_dir="usr/lib", os=:Windows)
-
-provides(BuildProcess,
-    (@build_steps begin
-        GetSources(libgco)
-        @build_steps begin
-            BinDeps.DirectoryRule(joinpath(prefix,"include"), @build_steps begin
-                CreateDirectory(joinpath(prefix,"include"))
-                `cp -r $srcdir/include $prefix`
-            end)
-        end
-    end), [libgco], os=:Windows)
+# copy header files
+mkpath(joinpath(prefix, "include"))
+cp(joinpath(srcdir, "include"), joinpath(prefix, "include"), remove_destination=true)
 
 
-# build from source
-provides(BuildProcess,
-    (@build_steps begin
-        GetSources(libgco)
-        CreateDirectory(builddir)
-        @build_steps begin
-            ChangeDirectory(builddir)
-            BinDeps.DirectoryRule(joinpath(prefix,"lib"), @build_steps begin
-                CreateDirectory(joinpath(prefix,"lib"))
-                FileRule(joinpath(prefix,"lib","lib$(name).$(Libdl.dlext)"), @build_steps begin
-                    `cmake $(srcdir)`
-                    `make`
-                    `cp lib$(name).$(Libdl.dlext) $prefix/lib`
-                end)
-                BinDeps.DirectoryRule(joinpath(prefix,"include"), @build_steps begin
-                    CreateDirectory(joinpath(prefix,"include"))
-                    `cp -r $srcdir/include $prefix`
-                end)
-            end)
-        end
-    end), [libgco], os=:Unix)
+if is_windows()
+    const archive = "downloads/$name-$version.zip"
+    if !isfile(archive)
+        info("Downloading $name-$version binaries from $repo...")
+        download("$repo/releases/download/v$version/$libname-$suffix.zip", archive)
+    end
+    run(`7z e $archive`)
+end
 
-@BinDeps.install Dict(:libgco => :libgco)
+if is_apple() || is_linux()
+    try
+        mkpath("$prefix/lib")
+        mkpath(builddir)
+        cd(builddir)
+        run(`cmake $srcdir`)
+        run(`make`)
+        cp("$libname.$(Libdl.dlext)", "$prefix/lib/$libname.$(Libdl.dlext)", remove_destination=true)
+    catch err
+        warn(err)
+        info("Downloading $name-$version binaries from $repo...")
+        download("$repo/releases/download/v$version/$libname.$(Libdl.dlext)", "$prefix/lib/$libname.$(Libdl.dlext)")
+    end
+end
