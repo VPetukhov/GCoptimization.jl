@@ -12,13 +12,3 @@ immutable GCOSparseDataCost
     site::GCOSiteID
     cost::GCOEnergyTermType
 end
-
-
-export GCObool
-export GCOnode_id
-export GCOLabelID
-export GCOEnergyTermType
-export GCOVarID
-export GCOSiteID
-
-export GCOSparseDataCost

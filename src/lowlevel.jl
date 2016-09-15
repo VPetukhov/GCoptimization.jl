@@ -19,6 +19,7 @@ alpha_beta_swap(gco::Cxx.CppPtr, alpha_label::GCOLabelID, beta_label::GCOLabelID
 alpha_beta_swap(gco::Cxx.CppPtr, alpha_label::GCOLabelID, beta_label::GCOLabelID, alphaSitesPtr::Ptr{GCOSiteID}, alpha_size::GCOSiteID, betaSitesPtr::Ptr{GCOSiteID}, beta_size::GCOSiteID)::Void = @cxx gco -> alpha_beta_swap(alpha_label, beta_label, alphaSitesPtr, alpha_size, betaSitesPtr, beta_size)
 
 # setDataCost
+# TODO: support setDataCostFunctor
 function setDataCost(gco::Cxx.CppPtr, dataCostFunc::Function)::Void
     const fn = cfunction(dataCostFunc, GCOEnergyTermType, (GCOSiteID, GCOLabelID))
     @cxx gco -> setDataCost(icxx"($GCOEnergyTermType (*)($GCOSiteID,$GCOLabelID))($fn)")
@@ -42,12 +43,12 @@ function setSmoothCost(gco::Cxx.CppPtr, smoothCostFuncExtra::Function, extraData
     @cxx gco -> setSmoothCost(icxx"($GCOEnergyTermType (*)($GCOSiteID,$GCOSiteID,$GCOLabelID,$GCOLabelID,Ptr{Void})($fn))", Ptr{Void}(extraData))
 end
 setSmoothCost(gco::Cxx.CppPtr, l1::GCOLabelID, l2::GCOLabelID, e::GCOEnergyTermType)::Void = @cxx gco -> setSmoothCost(l1, l2, e)
-setSmoothCost(gco::Cxx.CppPtr, smoothArray::GCOEnergyTermType)::Void = @cxx gco -> setSmoothCost(Ref(smoothArray))
+setSmoothCost(gco::Cxx.CppPtr, smoothArrayPtr::Ptr{GCOEnergyTermType})::Void = @cxx gco -> setSmoothCost(smoothArrayPtr)
 
 # setLabelCost
 setLabelCost(gco::Cxx.CppPtr, cost::GCOEnergyTermType)::Void = @cxx gco -> setLabelCost(cost)
-setLabelCost(gco::Cxx.CppPtr, costArray::GCOEnergyTermType)::Void = @cxx gco -> setLabelCost(Ref(costArray))
-setLabelSubsetCost(gco::Cxx.CppPtr, labels::GCOLabelID, numLabels::GCOLabelID, cost::GCOEnergyTermType)::Void = @cxx gco -> setLabelSubsetCost(labels, numLabels, cost)
+setLabelCost(gco::Cxx.CppPtr, costArrayPtr::Ptr{GCOEnergyTermType})::Void = @cxx gco -> setLabelCost(costArrayPtr)
+setLabelSubsetCost(gco::Cxx.CppPtr, labelsPtr::Ptr{GCOLabelID}, numLabels::GCOLabelID, cost::GCOEnergyTermType)::Void = @cxx gco -> setLabelSubsetCost(labelsPtr, numLabels, cost)
 
 # whatLabel
 whatLabel(gco::Cxx.CppPtr, site::GCOSiteID)::GCOLabelID = @cxx gco -> whatLabel(site)
@@ -58,7 +59,7 @@ setLabel(gco::Cxx.CppPtr, site::GCOSiteID, label::GCOLabelID)::Void = @cxx gco -
 
 # setLabelOrder
 setLabelOrder(gco::Cxx.CppPtr, isRandom::GCObool)::Void = @cxx gco -> setLabelOrder(isRandom)
-setLabelOrder(gco::Cxx.CppPtr, order::GCOLabelID, size::GCOLabelID)::Void = @cxx gco -> setLabelOrder(order, size)
+setLabelOrder(gco::Cxx.CppPtr, orderPtr::Ptr{GCOLabelID}, size::GCOLabelID)::Void = @cxx gco -> setLabelOrder(orderPtr, size)
 
 # compute_energy
 compute_energy(gco::Cxx.CppPtr)::GCOEnergyType = @cxx gco -> compute_energy()
@@ -74,13 +75,3 @@ numLabels(gco::Cxx.CppPtr)::GCOLabelID = @cxx gco -> numLabels()
 
 # setVerbosity
 setVerbosity(gco::Cxx.CppPtr, level::Cint)::Void = @cxx gco -> setVerbosity(level)
-
-
-export GCoptimizationGridGraph, setSmoothCostVH,
-       GCoptimizationGeneralGraph, setNeighbors
-
-export expansion, alpha_expansion, swap, alpha_beta_swap
-
-export setDataCost, setSmoothCost, setLabelCost, setLabelSubsetCost, whatLabel,
-       setLabel, setLabelOrder, compute_energy, giveDataEnergy, giveSmoothEnergy,
-       giveLabelEnergy, numSites, numLabels, setVerbosity

@@ -1,14 +1,10 @@
 using GCoptimization
-using Base.Test
 
-# test gco types
-@test isbits(GCOSparseDataCost) == true
-
-# basic example
 width = 10
 height = 5
 num_pixels = width * height
 num_labels = 7
+result = zeros(num_pixels)
 
 gco = GCoptimizationGridGraph(width, height, num_labels)
 
@@ -33,6 +29,12 @@ for l1 = 0:num_labels-1, l2 = 0:num_labels-1
     setSmoothCost(gco, l1, l2, cost)
 end
 
-@test compute_energy(gco) == 250
+println("Before optimization energy is ", compute_energy(gco))
 expansion(gco, 2)
-@test compute_energy(gco) == 44
+println("After optimization energy is ", compute_energy(gco))
+
+for i = 0:num_pixels-1
+    result[i+1] = whatLabel(gco, i)
+end
+
+showall(result)
