@@ -1,11 +1,9 @@
-# basic gco types
+# gco types
 typealias GCObool               Cuchar
 typealias GCOnode_id            Cint
 typealias GCOLabelID            Cint
 typealias GCOEnergyTermType     Cint
 typealias GCOEnergyType         Union{Cint, Clonglong}
-
-#
 typealias GCOVarID              GCOnode_id
 typealias GCOSiteID             GCOVarID
 
@@ -16,7 +14,7 @@ immutable GCOSparseDataCost
 end
 
 
-
+export GCObool
 export GCOnode_id
 export GCOLabelID
 export GCOEnergyTermType
