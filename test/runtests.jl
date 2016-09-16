@@ -5,7 +5,7 @@ using Base.Test
 @test isbits(GCOSparseDataCost) == true
 
 
-# basic example
+# GridGraph
 width = 10
 height = 5
 num_pixels = width * height
@@ -70,6 +70,23 @@ setSmoothCost(gco, smooth)
 expansion(gco, 2)
 @test compute_energy(gco) == 44
 
+# DArraySArraySpatVarying
+V = Vector{Int}(num_pixels)
+H = Vector{Int}(num_pixels)
+
+for i = 0:num_pixels-1
+    H[i+1] = i+(i+1)%3
+    V[i+1] = i*(i+width)%7
+end
+
+gco = GCoptimizationGridGraph(width, height, num_labels)
+
+setDataCost(gco, data)
+setSmoothCostVH(gco, smooth, V, H)
+
+@test compute_energy(gco) == 250
+expansion(gco, 2)
+@test compute_energy(gco) == 170
 
 # DfnSfn
 gco = GCoptimizationGridGraph(width, height, num_labels)
@@ -89,3 +106,43 @@ setSmoothCost(gco, smoothFn)
 @test compute_energy(gco) == 250
 expansion(gco, 2)
 @test compute_energy(gco) == 44
+
+# GeneralGraph
+gco = GCoptimizationGeneralGraph(num_pixels, num_labels)
+
+setDataCost(gco, data)
+setSmoothCost(gco, smooth)
+
+for y = 0:height-1, x = 1:width-1
+    setNeighbors(gco, x+y*width, x-1+y*width)
+end
+
+for y = 1:height-1, x = 0:width-1
+    setNeighbors(gco, x+y*width, x+(y-1)*width)
+end
+
+@test compute_energy(gco) == 250
+expansion(gco, 2)
+@test compute_energy(gco) == 44
+
+# DArraySArraySpatVarying
+gco = GCoptimizationGeneralGraph(num_pixels, num_labels)
+
+setDataCost(gco, data)
+setSmoothCost(gco, smooth)
+
+for y = 0:height-1, x = 1:width-1
+    p1 = x - 1 + y*width
+    p2 = x + y*width
+    setNeighbors(gco, p1, p2, p1+p2)
+end
+
+for y = 1:height-1, x = 0:width-1
+    p1 = x + (y-1)*width
+    p2 = x + y*width
+    setNeighbors(gco, p1, p2, p1*p2)
+end
+
+@test compute_energy(gco) == 250
+expansion(gco, 2)
+@test compute_energy(gco) == 244
