@@ -13,14 +13,12 @@ end
 function __init__()
     addHeaderDir(libPath, kind=C_System)
     Libdl.dlopen(libgco, Libdl.RTLD_GLOBAL)
-    cxxinclude(includePath*"/block.h")
-    cxxinclude(includePath*"/energy.h")
-    cxxinclude(includePath*"/graph.h")
-    cxxinclude(includePath*"/LinkedBlockList.h")
+    # cxxinclude(includePath*"/block.h")
+    # cxxinclude(includePath*"/energy.h")
+    # cxxinclude(includePath*"/graph.h")
+    # cxxinclude(includePath*"/LinkedBlockList.h")
     cxxinclude(includePath*"/GCoptimization.h")
 end
-
-__init__()
 
 # types
 export GCObool, GCOnode_id, GCOLabelID, GCOEnergyTermType, GCOVarID, GCOSiteID
