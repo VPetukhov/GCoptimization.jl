@@ -19,29 +19,29 @@ alpha_beta_swap(gco::Cxx.CppPtr, alpha_label::GCOLabelID, beta_label::GCOLabelID
 alpha_beta_swap(gco::Cxx.CppPtr, alpha_label::GCOLabelID, beta_label::GCOLabelID, alphaSitesPtr::Ptr{GCOSiteID}, alpha_size::GCOSiteID, betaSitesPtr::Ptr{GCOSiteID}, beta_size::GCOSiteID)::Void = @cxx gco -> alpha_beta_swap(alpha_label, beta_label, alphaSitesPtr, alpha_size, betaSitesPtr, beta_size)
 
 # setDataCost
-# TODO: support setDataCostFunctor
+# TODO: support setDataCostFunctor and setDataCost(extraData) version
 function setDataCost(gco::Cxx.CppPtr, dataCostFunc::Function)::Void
     const fn = cfunction(dataCostFunc, GCOEnergyTermType, (GCOSiteID, GCOLabelID))
     @cxx gco -> setDataCost(icxx"($GCOEnergyTermType (*)($GCOSiteID,$GCOLabelID))($fn)")
 end
-function setDataCost(gco::Cxx.CppPtr,  dataCostFuncExtra::Function, extraData)::Void
-    const fn = cfunction(dataCostFuncExtra, GCOEnergyTermType, (GCOSiteID, GCOLabelID, Ptr{Void}))
-    @cxx gco -> setDataCost(icxx"($GCOEnergyTermType (*)($GCOSiteID,$GCOLabelID,Ptr{Void}))($fn)", Ptr{Void}(extraData))
-end
+# function setDataCost(gco::Cxx.CppPtr,  dataCostFuncExtra::Function, extraData::Ptr{Void})::Void
+#     const fn = cfunction(dataCostFuncExtra, GCOEnergyTermType, (GCOSiteID, GCOLabelID, Ptr{Void}))
+#     @cxx gco -> setDataCost(icxx"($GCOEnergyTermType (*)($GCOSiteID,$GCOLabelID,$(Ptr{Void}))($fn)", extraData)
+# end
 setDataCost(gco::Cxx.CppPtr, dataArrayPtr::Ptr{GCOEnergyTermType})::Void = @cxx gco -> setDataCost(dataArrayPtr)
 setDataCost(gco::Cxx.CppPtr, s::GCOSiteID, l::GCOLabelID, e::GCOEnergyTermType)::Void = @cxx gco -> setDataCost(s, l, e)
 setDataCost(gco::Cxx.CppPtr, l::GCOLabelID, costsPtr::Ptr{GCOSparseDataCost}, count::GCOSiteID)::Void = @cxx gco -> setDataCost(l, costsPtr, count)
 
 # setSmoothCost
-# TODO: support setSmoothCostFunctor
+# TODO: support setSmoothCostFunctor and setSmoothCost(extraData) version
 function setSmoothCost(gco::Cxx.CppPtr, smoothCostFunc::Function)::Void
     const fn = cfunction(smoothCostFunc, GCOEnergyTermType, (GCOSiteID, GCOSiteID, GCOLabelID, GCOLabelID))
     @cxx gco -> setSmoothCost(icxx"($GCOEnergyTermType (*)($GCOSiteID,$GCOSiteID,$GCOLabelID,$GCOLabelID))($fn);")
 end
-function setSmoothCost(gco::Cxx.CppPtr, smoothCostFuncExtra::Function, extraData)::Void
-    const fn = cfunction(smoothCostFuncExtra, GCOEnergyTermType, (GCOSiteID, GCOSiteID, GCOLabelID, GCOLabelID, Ptr{Void}))
-    @cxx gco -> setSmoothCost(icxx"($GCOEnergyTermType (*)($GCOSiteID,$GCOSiteID,$GCOLabelID,$GCOLabelID,Ptr{Void})($fn))", Ptr{Void}(extraData))
-end
+# function setSmoothCost(gco::Cxx.CppPtr, smoothCostFuncExtra::Function, extraData::Ptr{Void})::Void
+#     const fn = cfunction(smoothCostFuncExtra, GCOEnergyTermType, (GCOSiteID, GCOSiteID, GCOLabelID, GCOLabelID, Ptr{Void}))
+#     @cxx gco -> setSmoothCost(icxx"($GCOEnergyTermType (*)($GCOSiteID,$GCOSiteID,$GCOLabelID,$GCOLabelID,$(Ptr{Void}))($fn))", extraData)
+# end
 setSmoothCost(gco::Cxx.CppPtr, l1::GCOLabelID, l2::GCOLabelID, e::GCOEnergyTermType)::Void = @cxx gco -> setSmoothCost(l1, l2, e)
 setSmoothCost(gco::Cxx.CppPtr, smoothArrayPtr::Ptr{GCOEnergyTermType})::Void = @cxx gco -> setSmoothCost(smoothArrayPtr)
 
