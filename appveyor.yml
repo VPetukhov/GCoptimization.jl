@@ -22,11 +22,11 @@ install:
 # Run installer silently, output to C:\projects\julia
   - C:\projects\julia-binary.exe /S /D=C:\projects\julia
 
-# build_script:
+build_script:
 # Need to convert from shallow to complete for Pkg.clone to work
-  # - IF EXIST .git\shallow (git fetch --unshallow)
-  # - C:\projects\julia\bin\julia -e "versioninfo();
-  #     Pkg.clone(pwd(), \"GCoptimization\"); Pkg.build(\"GCoptimization\")"
+  - IF EXIST .git\shallow (git fetch --unshallow)
+  - C:\projects\julia\bin\julia -e "versioninfo();
+      Pkg.clone(pwd(), \"GCoptimization\"); Pkg.build(\"GCoptimization\")"
 
-# test_script:
-  # - C:\projects\julia\bin\julia -e "Pkg.test(\"GCoptimization\")"
+test_script:
+  - C:\projects\julia\bin\julia -e "Pkg.test(\"GCoptimization\")"
