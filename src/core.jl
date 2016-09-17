@@ -14,7 +14,7 @@ setNeighbors{T<:Integer}(gco::Cxx.CppPtr, site1::T, site2::T, weight::Integer) =
 
 # expansion
 expansion(gco::Cxx.CppPtr, maxIterationNum::Integer) = expansion(gco, Cint(maxIterationNum))
-alpha_expansion(gco::Cxx.CppPtr, alphaLabel::Integer) = alpha_expansion(gco, GCOLabelID(alpha_label))
+alpha_expansion(gco::Cxx.CppPtr, alphaLabel::Integer) = alpha_expansion(gco, GCOLabelID(alphaLabel))
 
 # swap
 swap(gco::Cxx.CppPtr, maxIterationNum::Integer) = swap(gco, Cint(maxIterationNum))
