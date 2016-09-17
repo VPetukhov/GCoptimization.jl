@@ -1,3 +1,6 @@
+# "in this version, set data and smoothness terms using arrays.
+#  grid neighborhood is set up "manually"."
+#
 using GCoptimization
 
 width = 10
@@ -6,6 +9,7 @@ num_pixels = width * height
 num_labels = 7
 result = zeros(num_pixels)
 
+# "first set up data costs individually"
 data = Vector{Int}(num_pixels * num_labels)
 for i = 0:num_pixels-1, l = 0:num_labels-1
     if i < 25
@@ -23,26 +27,29 @@ for i = 0:num_pixels-1, l = 0:num_labels-1
     end
 end
 
+# "next set up the array for smooth costs"
 smooth = Vector{Int}(num_labels * num_labels)
 for l1 = 0:num_labels-1, l2 = 0:num_labels-1
     smooth[l1+l2*num_labels+1] = (l1-l2)*(l1-l2) <= 4  ? (l1-l2)*(l1-l2) : 4;
 end
 
-V = Vector{Int}(num_pixels)
-H = Vector{Int}(num_pixels)
+gco = GCoptimizationGeneralGraph(num_pixels, num_labels)
+setDataCost(gco, data)
+setSmoothCost(gco, smooth)
 
-for i = 0:num_pixels-1
-    H[i+1] = i+(i+1)%3
-    V[i+1] = i*(i+width)%7
+# "now set up a grid neighborhood system.
+#  first set up horizontal neighbors"
+for y = 0:height-1, x = 1:width-1
+    setNeighbors(gco, x+y*width, x-1+y*width)
 end
 
-gco = GCoptimizationGridGraph(width, height, num_labels)
-
-setDataCost(gco, data)
-setSmoothCostVH(gco, smooth, V, H)
+# "next set up vertical neighbors"
+for y = 1:height-1, x = 0:width-1
+    setNeighbors(gco, x+y*width, x+(y-1)*width)
+end
 
 println("Before optimization energy is ", compute_energy(gco))
-expansion(gco, 2)
+expansion(gco, 2)    # "run expansion for 2 iterations."
 println("After optimization energy is ", compute_energy(gco))
 
 for i = 0:num_pixels-1
