@@ -1,4 +1,4 @@
-const version = "1.2.6"
+const version = "1.2.8"
 const name = "GCoptimization"
 const libname = "lib"*name
 const repo = "https://github.com/Gnimuc/$name"
