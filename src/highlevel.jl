@@ -6,7 +6,7 @@ gco_create(siteNum, labelNum) = GCoptimizationGeneralGraph(siteNum, labelNum)
 
 # set neighbors
 gco_setneighbors(handle, site1, site2) = setNeighbors(handle, site1, site2)
-gco_setneighbors(handle, site1, site2, weight) setNeigh(handle, site1, site2, weight)
+gco_setneighbors(handle, site1, site2, weight) = setNeighbors(handle, site1, site2, weight)
 
 # datacost
 gco_setdatacost(handle, datacost::Vector) = setDataCost(handle, datacost)
