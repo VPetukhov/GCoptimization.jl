@@ -34,6 +34,11 @@ export setDataCost, setSmoothCost, setLabelCost, setLabelSubsetCost, whatLabel,
        setLabel, setLabelOrder, compute_energy, giveDataEnergy, giveSmoothEnergy,
        giveLabelEnergy, numSites, numLabels, setVerbosity
 
+# high-level APIs
+export gco_create, gco_setneighbors, gco_setdatacost, gco_setsmoothcost,
+       gco_setlabelcost, gco_expansion, gco_swap, gco_energy, gco_getlabeling,
+       gco_setlabelorder
+
 # types
 include("types.jl")
 
@@ -42,5 +47,8 @@ include("lowlevel.jl")
 
 # core functionalities
 include("core.jl")
+
+# high-level APIs
+include("highlevel.jl")
 
 end # module
