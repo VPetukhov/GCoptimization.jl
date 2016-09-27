@@ -1,4 +1,4 @@
-# test file for lowlevel APIs
+# test file for low-level APIs
 
 # constants
 const width = 10
@@ -27,23 +27,23 @@ end
 @test expansion(gridgraph, 2) == 44
 
 # data array & smooth array
-data = Matrix{Int}(pixelNum, labelNum)
+data = Matrix{Int}(labelNum, pixelNum)
 for i = 1:pixelNum, l = 1:labelNum
     if i <= 25
         if l == 1
-            data[i,l] = 0
+            data[l,i] = 0
         else
-            data[i,l] = 10
+            data[l,i] = 10
         end
     else
         if l == 6
-            data[i,l] = 0
+            data[l,i] = 0
         else
-            data[i,l] = 10
+            data[l,i] = 10
         end
     end
 end
-data = [transpose(data)...;]
+data = [data...;]
 
 smooth = Matrix{Int}(labelNum, labelNum)
 for l1 = 1:labelNum, l2 = 1:labelNum
@@ -129,14 +129,23 @@ end
 # miscellaneous
 @test numSites(gridgraph) == width * height
 @test numLabels(gridgraph) == labelNum
+
 @test whatLabel(gridgraph, 24) == 0
 @test whatLabel(gridgraph, 25) == 5
 labeling = Vector{Cint}(4)
 whatLabel(gridgraph, 23, 4, labeling)
 @test labeling == [0, 0, 5, 5]
+
 @test giveDataEnergy(gridgraph) == 0
 @test giveSmoothEnergy(gridgraph) == 44
 @test giveLabelEnergy(gridgraph) == 0
 
+
 alpha_expansion(gridgraph, 0)
 alpha_beta_swap(gridgraph, 0, 5)
+
+setVerbosity(gridgraph, 2)
+
+# add test for setLabel
+setLabel(gridgraph, 10, 2)
+whatLabel(gridgraph, 10) == 2

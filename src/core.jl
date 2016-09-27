@@ -50,4 +50,4 @@ setLabelOrder(gco::Cxx.CppPtr, isRandom::Bool) = setLabelOrder(gco, GCObool(isRa
 setLabelOrder{T<:Integer}(gco::Cxx.CppPtr, order::Vector{T}, size::Integer) = setLabelOrder(gco, Ref(convert(Vector{GCOLabelID}, order)), GCOLabelID(size))
 
 # setVerbosity
-setVerbosity(gco::Cxx.CppPtr, level::Integer) = setVerbosity(Cint(level))
+setVerbosity(gco::Cxx.CppPtr, level::Integer) = setVerbosity(gco, Cint(level))
