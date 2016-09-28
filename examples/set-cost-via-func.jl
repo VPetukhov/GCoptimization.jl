@@ -2,17 +2,17 @@ using GCoptimization
 
 width = 10
 height = 5
-num_pixels = width * height
-num_labels = 7
-result = zeros(num_pixels)
+pixelNum = width * height
+labelNum = 7
+result = zeros(pixelNum)
 
-gco = GCoptimizationGridGraph(width, height, num_labels)
+gco = GCoptimizationGridGraph(width, height, labelNum)
 
-function dataFn(p::GCOSiteID, l::GCOLabelID)::GCOEnergyTermType
-    if p < 25
-        return l == 0 ? 0 : 10
+function dataFn(pixel::GCOSiteID, label::GCOLabelID)::GCOEnergyTermType
+    if pixel < 25
+        return label == 0 ? 0 : 10
     else
-        return l == 5 ? 0 : 10
+        return label == 5 ? 0 : 10
     end
 end
 setDataCost(gco, dataFn)
@@ -24,8 +24,8 @@ println("Before optimization energy is ", compute_energy(gco))
 expansion(gco, 2)
 println("After optimization energy is ", compute_energy(gco))
 
-for i = 0:num_pixels-1
-    result[i+1] = whatLabel(gco, i)
-end
+
+result = [whatLabel(gco, i-1) for i = 1:pixelNum]
+
 
 showall(result)
