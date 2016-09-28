@@ -6,3 +6,6 @@ using Base.Test
 
 # test low-level APIs
 include("lowlevel.jl")
+
+# test high-level APIs
+include("highlevel.jl")

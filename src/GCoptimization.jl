@@ -13,10 +13,6 @@ end
 function __init__()
     addHeaderDir(libPath, kind=C_System)
     Libdl.dlopen(libgco, Libdl.RTLD_GLOBAL)
-    # cxxinclude(includePath*"/block.h")
-    # cxxinclude(includePath*"/energy.h")
-    # cxxinclude(includePath*"/graph.h")
-    # cxxinclude(includePath*"/LinkedBlockList.h")
     cxxinclude(includePath*"/GCoptimization.h")
 end
 
@@ -35,9 +31,11 @@ export setDataCost, setSmoothCost, setLabelCost, setLabelSubsetCost, whatLabel,
        giveLabelEnergy, numSites, numLabels, setVerbosity
 
 # high-level APIs
+export gco_αexpansion, gco_αβswap
+
 export gco_create, gco_setneighbors, gco_setdatacost, gco_setsmoothcost,
        gco_setlabelcost, gco_expansion, gco_swap, gco_energy, gco_getlabeling,
-       gco_setlabelorder
+       gco_setlabeling, gco_setlabelorder
 
 # types
 include("types.jl")
