@@ -16,12 +16,12 @@ end
 
 # datacost
 gco_setdatacost(handle, datacost::Vector) = setDataCost(handle, datacost)
-gco_setdatacost(handle, datacost::Matrix) = setDataCost(handle, [datacost...;])
+gco_setdatacost(handle, datacost::Matrix) = gco_setdatacost(handle, [datacost...;])
 gco_setdatacost(handle, site, label, energy) = setDataCost(handle, site-1, label-1, energy)
 
 # smoothcost
 gco_setsmoothcost(handle, smoothcost::Vector) = setSmoothCost(handle, smoothcost)
-gco_setsmoothcost(handle, smoothcost::Matrix) = setSmoothCost(handle, [smoothcost...;])
+gco_setsmoothcost(handle, smoothcost::Matrix) = gco_setsmoothcost(handle, [smoothcost...;])
 gco_setsmoothcost(handle, label1, label2, energy) = setSmoothCost(handle, label1-1, label2-1, energy)
 
 # labelcost
@@ -63,16 +63,16 @@ function gco_setlabeling(handle, labeling::Vector)
         setLabel(handle, i-1, labeling[i]-1)
     end
 end
-gco_setlabeling(handle, labeling::Matrix) = get_setlabeling(handle, [labeling...;])
+gco_setlabeling(handle, labeling::Matrix) = gco_setlabeling(handle, [labeling...;])
 
 function gco_setlabeling(handle, sites::Vector, labeling::Vector)
     @assert 0 < length(labeling) <= numSites(handle) "no label or too many labels... $(length(labeling))"
-    for i in sites
+    for i in eachindex(sites)
         @assert 0 < labeling[i] <= numLabels(handle) "invalid label: $(labeling[i])"
-        setLabel(handle, i-1, labeling[i]-1)
+        setLabel(handle, sites[i]-1, labeling[i]-1)
     end
 end
-gco_setlabeling(handle, sites::Matrix, labeling::Matrix) = get_setlabeling(handle, [sites...;], [labeling...;])
+gco_setlabeling(handle, sites::Matrix, labeling::Matrix) = gco_setlabeling(handle, [sites...;], [labeling...;])
 
 # set label order
 gco_setlabelorder(handle, random::Bool) = setLabelOrder(handle, random)

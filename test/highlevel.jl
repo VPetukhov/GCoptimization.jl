@@ -40,7 +40,7 @@ gco_setlabeling(h, 4-gco_getlabeling(h))
 @test gco_expansion(h) == 0
 
 # datacost
-h = gco_create(4,9)
+h = gco_create(4, 9)
 dc = [1 2 5 8 4 2 3 7 9;
       3 1 2 5 4 5 5 5 5;
       5 5 5 5 4 5 2 1 3;

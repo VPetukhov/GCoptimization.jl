@@ -140,7 +140,6 @@ whatLabel(gridgraph, 23, 4, labeling)
 @test giveSmoothEnergy(gridgraph) == 44
 @test giveLabelEnergy(gridgraph) == 0
 
-
 alpha_expansion(gridgraph, 0)
 alpha_beta_swap(gridgraph, 0, 5)
 
@@ -149,3 +148,38 @@ setVerbosity(gridgraph, 2)
 # add test for setLabel
 setLabel(gridgraph, 10, 2)
 whatLabel(gridgraph, 10) == 2
+
+# test setDataCost(gco::Cxx.CppPtr,  dataCostFuncExtra::Function, extraData::Ptr{Void})
+#      setSmoothCost(gco::Cxx.CppPtr, smoothCostFuncExtra::Function, extraData::Ptr{Void})
+immutable ForDataFn
+    data::Vector{Cint}
+    numLab::Cint
+end
+
+function dataFn(p::GCOSiteID, l::GCOLabelID, data::Ptr{Void})::GCOEnergyTermType
+    myData = unsafe_pointer_to_objref(data)
+    numLab = myData.numLab
+    return myData.data[p*numLab+l+1]
+end
+
+immutable ForSmoothFn
+    data::Vector{Cint}
+    numLab::Cint
+end
+
+function smoothFn(p1::GCOSiteID, p2::GCOSiteID, l1::GCOLabelID, l2::GCOLabelID, data::Ptr{Void})::GCOEnergyTermType
+    mySmooth = unsafe_pointer_to_objref(data)
+    numLab = mySmooth.numLab
+    return mySmooth.data[l1+l2*numLab+1]
+end
+
+gco = GCoptimizationGridGraph(width, height, labelNum)
+
+toDataFn = ForDataFn(data, labelNum)
+setDataCost(gco, dataFn, pointer_from_objref(toDataFn))
+
+toSmoothFn = ForSmoothFn(smooth, labelNum)
+setSmoothCost(gco, smoothFn, pointer_from_objref(toSmoothFn))
+
+@test compute_energy(gco) == 250
+@test expansion(gco) == 44
