@@ -51,7 +51,7 @@ gco_setsmoothcost(gco, [
     2 1 0])
 
 # set neighbor system via weight matrix
-#          pixel1 pixel1 pixel3 pixel4
+#          pixel1 pixel2 pixel3 pixel4
 # pixel 1    0      1      0      0
 # pixel 2    0      0      1      0
 # pixel 3    0      0      0      2
