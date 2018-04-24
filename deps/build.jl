@@ -5,7 +5,7 @@ const repo = "https://github.com/Gnimuc/$name"
 const suffix = Sys.WORD_SIZE == 64 ? "x64" : "x86"
 
 prefix = joinpath(dirname(@__FILE__), "usr")
-srcdir = joinpath(dirname(@__FILE__), "src", "$name-$version")
+srcdir = joinpath(dirname(@__FILE__), "src", "GraphCutsBuilder-$version")
 builddir = joinpath(dirname(@__FILE__), "builds", "$name-$version")
 
 if is_windows()
