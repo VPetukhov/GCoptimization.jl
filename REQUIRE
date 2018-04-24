@@ -1,2 +1,2 @@
-julia 0.5
-Cxx 0.0.2
+julia 0.6
+Cxx 0.2.0
